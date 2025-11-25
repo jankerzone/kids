@@ -86,44 +86,22 @@
     <script type="text/babel">
 
         // --- DATABASE BENDERA (Bahasa Indonesia) ---
-        // Menggunakan FlagCDN untuk gambar berkualitas tinggi
-        const countriesData = [
-            { code: 'id', name: 'Indonesia' },
-            { code: 'jp', name: 'Jepang' },
-            { code: 'sa', name: 'Arab Saudi' },
-            { code: 'kr', name: 'Korea Selatan' },
-            { code: 'gb', name: 'Inggris' },
-            { code: 'us', name: 'Amerika Serikat' },
-            { code: 'my', name: 'Malaysia' },
-            { code: 'sg', name: 'Singapura' },
-            { code: 'th', name: 'Thailand' },
-            { code: 'vn', name: 'Vietnam' },
-            { code: 'tr', name: 'Turki' },
-            { code: 'ps', name: 'Palestina' },
-            { code: 'cn', name: 'China' },
-            { code: 'in', name: 'India' },
-            { code: 'au', name: 'Australia' },
-            { code: 'de', name: 'Jerman' },
-            { code: 'nl', name: 'Belanda' },
-            { code: 'fr', name: 'Perancis' },
-            { code: 'it', name: 'Italia' },
-            { code: 'es', name: 'Spanyol' },
-            { code: 'br', name: 'Brazil' },
-            { code: 'ar', name: 'Argentina' },
-            { code: 'ru', name: 'Rusia' },
-            { code: 'ca', name: 'Kanada' },
-            { code: 'eg', name: 'Mesir' },
-            { code: 'se', name: 'Swedia' },
-            { code: 'no', name: 'Norwegia' },
-            { code: 'dk', name: 'Denmark' },
-            { code: 'pt', name: 'Portugal' },
-            { code: 'gr', name: 'Yunani' },
-            { code: 'mx', name: 'Meksiko' },
-            { code: 'za', name: 'Afrika Selatan' },
-            { code: 'ph', name: 'Filipina' },
-            { code: 'nz', name: 'Selandia Baru' },
-            { code: 'ch', name: 'Swiss' }
-        ];
+        // Data terenkripsi untuk mencegah inspect element
+        const encryptedData = "W3siY29kZSI6ImlkIiwibmFtZSI6Iklkb25lc2lhIn0seyJjb2RlIjoianAiLCJuYW1lIjoiSmVwYW5nIn0seyJjb2RlIjoic2EiLCJuYW1lIjoiQXJhYiBTYXVkaSJ9LHsiY29kZSI6ImtyIiwibmFtZSI6Iktvcmx5YSBTZWxhdGFuIn0seyJjb2RlIjoiZ2IiLCJuYW1lIjoiSW5nZ3JpcyJ9LHsiY29kZSI6InVzIiwibmFtZSI6IkFtZXJpa2EgU2VyaWthdCJ9LHsiY29kZSI6Im15IiwibmFtZSI6Ik1hbGF5c2lhIn0seyJjb2RlIjoic2ciLCJuYW1lIjoiU2luZ2FwdXJhIn0seyJjb2RlIjoidGgiLCJuYW1lIjoiVGhhaWxhbmQifSx7ImNvZGUiOiJ2biIsIm5hbWUiOiJWaWV0bmFtIn0seyJjb2RlIjoidHIiLCJuYW1lIjoiVHVya2kifSx7ImNvZGUiOiJwcyIsIm5hbWUiOiJQYWxlc3RpbmEifSx7ImNvZGUiOiJjbiIsIm5hbWUiOiJDaGluYSJ9LHsiY29kZSI6ImluIiwibmFtZSI6IkluZGlhIn0seyJjb2RlIjoiYXUiLCJuYW1lIjoiQXVzdHJhbGlhIn0seyJjb2RlIjoiZGUiLCJuYW1lIjoiSmVybWFuIn0seyJjb2RlIjoibmwiLCJuYW1lIjoiQmVsYW5kYSJ9LHsiY29kZSI6ImZyIiwibmFtZSI6IlBlcmFuY2lzIn0seyJjb2RlIjoiaXQiLCJuYW1lIjoiSXRhbGlhIn0seyJjb2RlIjoiZXMiLCJuYW1lIjoiU3BhbnlvbCJ9LHsiY29kZSI6ImJyIiwibmFtZSI6IkJyYXppbCJ9LHsiY29kZSI6ImFyIiwibmFtZSI6IkFyZ2VudGluYSJ9LHsiY29kZSI6InJ1IiwibmFtZSI6IlJ1c2lhIn0seyJjb2RlIjoiY2EiLCJuYW1lIjoiS2FuYWRhIn0seyJjb2RlIjoiZWciLCJuYW1lIjoiTWVzaXIifSx7ImNvZGUiOiJzZSIsIm5hbWUiOiJTd2VkaWEifSx7ImNvZGUiOiJubyIsIm5hbWUiOiJOb3J3ZWdpYSJ9LHsiY29kZSI6ImRrIiwibmFtZSI6IkRlbm1hcmsifSx7ImNvZGUiOiJwdCIsIm5hbWUiOiJQb3J0dWdhbCJ9LHsiY29kZSI6ImdyIiwibmFtZSI6Ill1bmFuaSJ9LHsiY29kZSI6Im14IiwibmFtZSI6Ik1la3Npa28ifSx7ImNvZGUiOiJ6YSIsIm5hbWUiOiJBZnJpa2EgU2VsYXRhbiJ9LHsiY29kZSI6InBoIiwibmFtZSI6IkZpbGlwaW5hIn0seyJjb2RlIjoibnkiLCJuYW1lIjoiU2VsYW5kaWEgQmFydSJ9LHsiY29kZSI6ImNoIiwibmFtZSI6IlN3aXNzIn1d";
+
+        // Fungsi dekripsi sederhana
+        const decryptData = (encrypted) => {
+            try {
+                const decoded = atob(encrypted);
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error('Decryption failed');
+                return [];
+            }
+        };
+
+        // Dekripsi data saat runtime
+        const countriesData = decryptData(encryptedData);
 
         // --- AUDIO ENGINE SEDERHANA (Tanpa file mp3) ---
         const playSound = (type) => {

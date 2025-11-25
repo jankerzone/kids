@@ -106,44 +106,22 @@
     <script type="text/babel">
 
         // --- DATABASE PETA (Bentuk Ikonik & Besar) ---
-        // Menggunakan Mapsicon (SVG Shapes)
-        const mapsData = [
-            { code: 'id', name: 'Indonesia', hint: 'Negara kita! Banyak pulaunya.' },
-            { code: 'au', name: 'Australia', hint: 'Benua Kanguru.' },
-            { code: 'it', name: 'Italia', hint: 'Bentuknya seperti Sepatu Boot 👢' },
-            { code: 'jp', name: 'Jepang', hint: 'Melengkung seperti pisang.' },
-            { code: 'us', name: 'Amerika Serikat', hint: 'Negara besar berbentuk kotak lebar.' },
-            { code: 'in', name: 'India', hint: 'Seperti segitiga terbalik 🔽' },
-            { code: 'br', name: 'Brazil', hint: 'Paling besar di Amerika Selatan.' },
-            { code: 'cl', name: 'Chili', hint: 'Panjang dan kurus seperti Cacing 🪱' },
-            { code: 'fr', name: 'Perancis', hint: 'Bentuknya segi enam.' },
-            { code: 'cn', name: 'China', hint: 'Bentuknya seperti Ayam Jago 🐓' },
-            { code: 'gb', name: 'Inggris', hint: 'Pulau Ratu Elizabeth.' },
-            { code: 'ru', name: 'Rusia', hint: 'Negara paling panjang di dunia.' },
-            { code: 'sa', name: 'Arab Saudi', hint: 'Bentuk sepatu besar di pasir.' },
-            { code: 'eg', name: 'Mesir', hint: 'Bentuk kotak, ada piramida.' },
-            { code: 'vn', name: 'Vietnam', hint: 'Bentuk huruf S.' },
-            { code: 'ca', name: 'Kanada', hint: 'Negara tetangga Amerika di utara, ada daun maple 🍁' },
-            { code: 'mx', name: 'Meksiko', hint: 'Di selatan Amerika, suka Taco 🌮' },
-            { code: 'ar', name: 'Argentina', hint: 'Negara asal Messi, panjang di Amerika Selatan ⚽' },
-            { code: 'de', name: 'Jerman', hint: 'Terkenal dengan mobil dan sosis 🌭' },
-            { code: 'es', name: 'Spanyol', hint: 'Negara Matador 🐂' },
-            { code: 'th', name: 'Thailand', hint: 'Bentuknya seperti kepala Gajah 🐘' },
-            { code: 'kr', name: 'Korea Selatan', hint: 'Negara K-Pop 🎵' },
-            { code: 'nz', name: 'Selandia Baru', hint: 'Dua pulau tetangga Australia 🥝' },
-            { code: 'mg', name: 'Madagaskar', hint: 'Pulau besar di dekat Afrika, ada lemur 🐒' },
-            { code: 'ph', name: 'Filipina', hint: 'Negara kepulauan tetangga kita di utara 🇵🇭' },
-            { code: 'tr', name: 'Turki', hint: 'Jembatan antara Eropa dan Asia 🌉' },
-            { code: 'no', name: 'Norwegia', hint: 'Negara Viking yang panjang di utara ❄️' },
-            { code: 'gr', name: 'Yunani', hint: 'Banyak pulau dan sejarah kuno 🏛️' },
-            { code: 'pt', name: 'Portugal', hint: 'Tetangga Spanyol, asal Ronaldo ⚽' },
-            { code: 'my', name: 'Malaysia', hint: 'Tetangga serumpun kita 🇲🇾' },
-            { code: 'sg', name: 'Singapura', hint: 'Negara kota kecil yang sangat maju 🦁' },
-            { code: 'pg', name: 'Papua Nugini', hint: 'Berbagi pulau dengan Papua kita 🏝️' },
-            { code: 'lk', name: 'Sri Lanka', hint: 'Pulau tetesan air mata di bawah India 💧' },
-            { code: 'is', name: 'Islandia', hint: 'Pulau Es dan Api 🌋' },
-            { code: 'cu', name: 'Kuba', hint: 'Pulau cerutu di Karibia 🇨🇺' }
-        ];
+        // Data terenkripsi untuk mencegah inspect element
+        const encryptedMapsData = "W3siY29kZSI6ImlkIiwibmFtZSI6Iklkb25lc2lhIiwiaGludCI6Ik5lZ2FyYSBraXRhISBCYW55YWsgcHVsYXVueWEuIn0seyJjb2RlIjoiYXUiLCJuYW1lIjoiQXVzdHJhbGlhIiwiaGludCI6IkJlbnVhIEthbmd1cnUuIn0seyJjb2RlIjoiaXQiLCJuYW1lIjoiSXRhbGlhIiwiaGludCI6IkJlbnR1a255YSBzZXBlcnRpIFNlcGF0dSBCb290IPCfkaMifSx7ImNvZGUiOiJqcCIsIm5hbWUiOiJKZXBhbmciLCJoaW50IjoiTWVsZW5na3VuZyBzZXBlcnRpIHBpc2FuZy4ifSx7ImNvZGUiOiJ1cyIsIm5hbWUiOiJBbWVyaWthIFNlcmlrYXQiLCJoaW50IjoiTmVnYXJhIGJlc2FyIGJlcmJlbnR1ayBrb3RhayBsZWJhci4ifSx7ImNvZGUiOiJpbiIsIm5hbWUiOiJJbmRpYSIsImhpbnQiOiJTZXBlcnRpIHNlZ2l0aWdhIHRlcmJhbGlrIPCflL0ifSx7ImNvZGUiOiJiciIsIm5hbWUiOiJCcmF6aWwiLCJoaW50IjoiUGFsaW5nIGJlc2FyIGRpIEFtZXJpa2EgU2VsYXRhbi4ifSx7ImNvZGUiOiJjbCIsIm5hbWUiOiJDaGlsaSIsImhpbnQiOiJQYW5qYW5nIGRhbiBrdXJ1cyBzZXBlcnRpIENhY2luZyDwn6qxIn0seyJjb2RlIjoiZnIiLCJuYW1lIjoiUGVyYW5jaXMiLCJoaW50IjoiQmVudHVrbnlhIHNlZ2kgZW5hbS4ifSx7ImNvZGUiOiJjbiIsIm5hbWUiOiJDaGluYSIsImhpbnQiOiJCZW50dWtueWEgc2VwZXJ0aSBBeWFtIEphZ28g8J+QkyJ9LHsiY29kZSI6ImdiIiwibmFtZSI6Iklkb2dyaXMiLCJoaW50IjoiUHVsYXUgUmF0dSBFbGl6YWJldGguIn0seyJjb2RlIjoicnUiLCJuYW1lIjoiUnVzaWEiLCJoaW50IjoiTmVnYXJhIHBhbGluZyBwYW5qYW5nIGRpIGR1bmlhLiJ9LHsiY29kZSI6InNhIiwibmFtZSI6IkFyYWIgU2F1ZGkiLCJoaW50IjoiQmVudHVrIHNlcGF0dSBiZXNhciBkaSBwYXNpci4ifSx7ImNvZGUiOiJlZyIsIm5hbWUiOiJNZXNpciIsImhpbnQiOiJCZW50dWsga290YWssIGFkYSBwaXJhbWlkYS4ifSx7ImNvZGUiOiJ2biIsIm5hbWUiOiJWaWV0bmFtIiwiaGludCI6IkJlbnR1ayBodXJ1ZiBTLiJ9LHsiY29kZSI6ImNhIiwibmFtZSI6IkthbmFkYSIsImhpbnQiOiJOZWdhcmEgdGV0YW5nZ2EgQW1lcmlrYSBkaSB1dGFyYSwgYWRhIGRhdW4gbWFwbGUg8J+NgSJ9LHsiY29kZSI6Im14IiwibmFtZSI6Ik1la3Npa28iLCJoaW50IjoiRGkgc2VsYXRhbiBBbWVyaWthLCBzdWthIFRhY28g8J+MriJ9LHsiY29kZSI6ImFyIiwibmFtZSI6IkFyZ2VudGluYSIsImhpbnQiOiJOZWdhcmEgYXNhbCBNZXNzaSwgcGFuamFuZyBkaSBBbWVyaWthIFNlbGF0YW4g4pq9In0seyJjb2RlIjoiZGUiLCJuYW1lIjoiSmVybWFuIiwiaGludCI6IlRlcmtlbmFsIGRlbmdhbiBtb2JpbCBkYW4gc29zaXMg8J+MrSJ9LHsiY29kZSI6ImVzIiwibmFtZSI6IlNwYW55b2wiLCJoaW50IjoiTmVnYXJhIE1hdGFkb3Ig8J+QgiJ9LHsiY29kZSI6InRoIiwibmFtZSI6IlRoYWlsYW5kIiwiaGludCI6IkJlbnR1a255YSBzZXBlcnRpIGtlcGFsYSBHYWphaCDwn5CYIn0seyJjb2RlIjoia3IiLCJuYW1lIjoiS29yZWEgU2VsYXRhbiIsImhpbnQiOiJOZWdhcmEgSy1Qb3Ag8J+OtSJ9LHsiY29kZSI6Im56IiwibmFtZSI6IlNlbGFuZGlhIEJhcnUiLCJoaW50IjoiRHVhIHB1bGF1IHRldGFuZ2dhIEF1c3RyYWxpYSDwn6WdIn0seyJjb2RlIjoibWciLCJuYW1lIjoiTWFkYWdhc2thciIsImhpbnQiOiJQdWxhdSBiZXNhciBkaSBkZWthdCBBZnJpa2EsIGFkYSBsZW11ciDwn5CiIn0seyJjb2RlIjoicGgiLCJuYW1lIjoiRmlsaXBpbmEiLCJoaW50IjoiTmVnYXJhIGtlcHVsYXVhbiB0ZXRhbmdnYSBraXRhIGRpIHV0YXJhIPCfh7Dwn4exIn0seyJjb2RlIjoidHIiLCJuYW1lIjoiVHVya2kiLCJoaW50IjoiSmVtYmF0YW4gYW50YXJhIEV1cm9wYSBkYW4gQXNpYSDwn4yJIn0seyJjb2RlIjoibm8iLCJuYW1lIjoiTm9yd2VnaWEiLCJoaW50IjoiTmVnYXJhIFZpa2luZyB5YW5nIHBhbmphbmcgZGkgdXRhcmEg4p2E77iPIn0seyJjb2RlIjoiZ3IiLCJuYW1lIjoiWXVuYW5pIiwiaGludCI6IkJhbnlhayBwdWxhdSBkYW4gc2VqYXJhaCBrdW5vIPCfj5sifSx7ImNvZGUiOiJwdCIsIm5hbWUiOiJQb3J0dWdhbCIsImhpbnQiOiJUZXRhbmdnYSBTcGFueW9sLCBhc2FsIFJvbmFsZG8g4pq9In0seyJjb2RlIjoibXkiLCJuYW1lIjoiTWFsYXlzaWEiLCJoaW50IjoiVGV0YW5nZ2Egc2VydW1wdW4ga2l0YSDwn4e68J+HuCJ9LHsiY29kZSI6InNnIiwibmFtZSI6IlNpbmdhcHVyYSIsImhpbnQiOiJOZWdhcmEga290YSBrZWNpbCB5YW5nIHNhbmdhdCBtYWp1IPCfpokifSx7ImNvZGUiOiJwZyIsIm5hbWUiOiJQYXB1YSBOdWdpbmkiLCJoaW50IjoiQmVyYmFnaSBwdWxhdSBkZW5nYW4gUGFwdWEga2l0YSDwn4+d77iPIn0seyJjb2RlIjoibGsiLCJuYW1lIjoiU3JpIExhbmthIiwiaGludCI6IlB1bGF1IHRldGVzYW4gYWlyIG1hdGEgZGkgYmF3YWggSW5kaWEg8J+SpyJ9LHsiY29kZSI6ImlzIiwibmFtZSI6IklzbGFuZGlhIiwiaGludCI6IlB1bGF1IEVzIGRhbiBBcGkg8J+MiSJ9LHsiY29kZSI6ImN1IiwibmFtZSI6Ikt1YmEiLCJoaW50IjoiUHVsYXUgY2VydXR1IGRpIEthcmliaWEg8J+HqPCfh7UifV0=";
+
+        // Fungsi dekripsi sederhana
+        const decryptMapsData = (encrypted) => {
+            try {
+                const decoded = atob(encrypted);
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error('Decryption failed');
+                return [];
+            }
+        };
+
+        // Dekripsi data saat runtime
+        const mapsData = decryptMapsData(encryptedMapsData);
 
         // --- AUDIO ENGINE ---
         const playSound = (type) => {
