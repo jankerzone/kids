@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Bendera Anak Ceria</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Google Fonts: Fredoka untuk tampilan anak-anak yang bulat -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #FEF9C3;
+            /* Yellow-100 */
+            background-image: radial-gradient(#FDBA74 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        /* Animasi Card Shake kalau salah */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px) rotate(-5deg);
+            }
+
+            75% {
+                transform: translateX(10px) rotate(5deg);
+            }
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        /* Animasi Pop kalau benar */
+        @keyframes pop {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-pop {
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+        // --- DATABASE BENDERA (Bahasa Indonesia) ---
+        // Menggunakan FlagCDN untuk gambar berkualitas tinggi
+        const countriesData = [
+            { code: 'id', name: 'Indonesia' },
+            { code: 'jp', name: 'Jepang' },
+            { code: 'sa', name: 'Arab Saudi' },
+            { code: 'kr', name: 'Korea Selatan' },
+            { code: 'gb', name: 'Inggris' },
+            { code: 'us', name: 'Amerika Serikat' },
+            { code: 'my', name: 'Malaysia' },
+            { code: 'sg', name: 'Singapura' },
+            { code: 'th', name: 'Thailand' },
+            { code: 'vn', name: 'Vietnam' },
+            { code: 'tr', name: 'Turki' },
+            { code: 'ps', name: 'Palestina' },
+            { code: 'cn', name: 'China' },
+            { code: 'in', name: 'India' },
+            { code: 'au', name: 'Australia' },
+            { code: 'de', name: 'Jerman' },
+            { code: 'nl', name: 'Belanda' },
+            { code: 'fr', name: 'Perancis' },
+            { code: 'it', name: 'Italia' },
+            { code: 'es', name: 'Spanyol' },
+            { code: 'br', name: 'Brazil' },
+            { code: 'ar', name: 'Argentina' },
+            { code: 'ru', name: 'Rusia' },
+            { code: 'ca', name: 'Kanada' },
+            { code: 'eg', name: 'Mesir' },
+            { code: 'se', name: 'Swedia' },
+            { code: 'no', name: 'Norwegia' },
+            { code: 'dk', name: 'Denmark' },
+            { code: 'pt', name: 'Portugal' },
+            { code: 'gr', name: 'Yunani' },
+            { code: 'mx', name: 'Meksiko' },
+            { code: 'za', name: 'Afrika Selatan' },
+            { code: 'ph', name: 'Filipina' },
+            { code: 'nz', name: 'Selandia Baru' },
+            { code: 'ch', name: 'Swiss' }
+        ];
+
+        // --- AUDIO ENGINE SEDERHANA (Tanpa file mp3) ---
+        const playSound = (type) => {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return;
+
+            const audioCtx = new AudioContext();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                // Suara "Ting!" (High pitch, ascending)
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(500, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                // Suara "Tetot" (Low pitch, descending)
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+                oscillator.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'click') {
+                // Suara klik lembut
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'pop') {
+                // Suara Pop kecil saat reveal
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.1);
+            }
+        };
+
+        // --- KOMPONEN UTAMA ---
+        function App() {
+            const [gameState, setGameState] = React.useState('lobby'); // lobby, playing, result
+            const [queue, setQueue] = React.useState([]);
+            const [currentIndex, setCurrentIndex] = React.useState(0);
+            const [score, setScore] = React.useState(0);
+            const [animClass, setAnimClass] = React.useState(''); // Untuk efek shake/pop
+
+            // State baru untuk sensor nama
+            const [isRevealed, setIsRevealed] = React.useState(false);
+
+            // Fungsi mengacak array (Fisher-Yates Shuffle)
+            const shuffleArray = (array) => {
+                let currentIndex = array.length, randomIndex;
+                const newArray = [...array];
+                while (currentIndex != 0) {
+                    randomIndex = Math.floor(Math.random() * currentIndex);
+                    currentIndex--;
+                    [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]];
+                }
+                return newArray;
+            };
+
+            const startGame = () => {
+                playSound('click');
+                const shuffled = shuffleArray(countriesData);
+                // Ambil 10 soal saja per sesi biar anak gak bosen
+                setQueue(shuffled.slice(0, 10));
+                setScore(0);
+                setCurrentIndex(0);
+                setIsRevealed(false); // Reset sensor
+                setGameState('playing');
+            };
+
+            const handleAnswer = (isCorrect) => {
+                if (isCorrect) {
+                    playSound('correct');
+                    setScore(s => s + 1);
+                    // Efek Confetti
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#22c55e', '#fbbf24', '#3b82f6'] // Hijau, Kuning, Biru
+                    });
+                    nextCard(500); // Lanjut otomatis agak cepat
+                } else {
+                    playSound('wrong');
+                    setScore(s => Math.max(0, s - 1)); // Skor gak boleh minus
+                    setAnimClass('animate-shake'); // Efek getar
+                    setTimeout(() => setAnimClass(''), 400); // Reset animasi
+                    nextCard(800); // Lanjut agak lama biar sadar salah
+                }
+            };
+
+            const nextCard = (delay) => {
+                setTimeout(() => {
+                    if (currentIndex < queue.length - 1) {
+                        setIsRevealed(false); // Sembunyikan lagi untuk soal berikutnya
+                        setCurrentIndex(prev => prev + 1);
+                    } else {
+                        playSound('correct'); // Fanfare kecil
+                        setGameState('result');
+                    }
+                }, delay);
+            };
+
+            const revealName = () => {
+                if (!isRevealed) {
+                    playSound('pop');
+                    setIsRevealed(true);
+                }
+            }
+
+            // --- RENDER HALAMAN ---
+
+            // 1. LOBBY SCREEN
+            if (gameState === 'lobby') {
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                        <div className="bg-white p-8 rounded-[3rem] shadow-[0_10px_0_rgb(0,0,0,0.1)] border-4 border-blue-400 max-w-md w-full text-center animate-pop">
+                            <div className="text-6xl mb-4">🌍</div>
+                            <h1 className="text-4xl font-bold text-blue-600 mb-2">Tebak Bendera</h1>
+                            <p className="text-gray-500 text-lg mb-8">Edisi Belajar Bareng Ayah</p>
+
+                            <button
+                                onClick={startGame}
+                                className="w-full bg-green-500 hover:bg-green-600 text-white text-2xl font-bold py-4 px-8 rounded-full shadow-[0_6px_0_rgb(21,128,61)] active:shadow-[0_2px_0_rgb(21,128,61)] active:translate-y-1 transition-all"
+                            >
+                                MULAI MAIN! 🚀
+                            </button>
+                        </div>
+                        <div className="mt-8 text-gray-400 text-sm font-semibold">
+                            Happy Kid, Happy Family
+                        </div>
+                    </div>
+                );
+            }
+
+            // 2. RESULT SCREEN
+            if (gameState === 'result') {
+                // Tentukan bintang berdasarkan skor
+                let stars = "⭐";
+                let message = "Ayo coba lagi!";
+                if (score > 8) { stars = "⭐⭐⭐"; message = "LUAR BIASA HEBAT!"; }
+                else if (score > 5) { stars = "⭐⭐"; message = "PINTAR SEKALI!"; }
+
+                return (
+                    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+                        <div className="bg-white p-8 rounded-[3rem] shadow-xl border-4 border-yellow-400 max-w-md w-full text-center animate-pop">
+                            <h2 className="text-3xl font-bold text-gray-700 mb-4">Selesai!</h2>
+
+                            <div className="text-6xl mb-2">{stars}</div>
+                            <div className="text-8xl font-black text-blue-500 mb-2">{score * 10}</div>
+                            <p className="text-xl font-bold text-gray-400 mb-8">Nilai Kamu</p>
+
+                            <div className="bg-yellow-100 p-4 rounded-xl mb-8">
+                                <p className="text-yellow-700 font-bold text-lg">{message}</p>
+                            </div>
+
+                            <button
+                                onClick={startGame}
+                                className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xl font-bold py-3 px-6 rounded-full shadow-[0_6px_0_rgb(29,78,216)] active:shadow-none active:translate-y-1 transition-all"
+                            >
+                                Main Lagi 🔄
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // 3. GAMEPLAY SCREEN
+            const currentCard = queue[currentIndex];
+
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center p-4">
+
+                    {/* Header Info */}
+                    <div className="w-full max-w-lg flex justify-between items-center mb-6 px-4">
+                        <div className="bg-white px-4 py-2 rounded-full shadow border-2 border-blue-200">
+                            <span className="text-gray-500 font-bold">Soal: </span>
+                            <span className="text-blue-600 font-black text-xl">{currentIndex + 1}/10</span>
+                        </div>
+                        <div className="bg-white px-4 py-2 rounded-full shadow border-2 border-yellow-200">
+                            <span className="text-gray-500 font-bold">Skor: </span>
+                            <span className="text-yellow-600 font-black text-xl">{score}</span>
+                        </div>
+                    </div>
+
+                    {/* Main Card */}
+                    <div className={`relative bg-white p-2 rounded-[2.5rem] shadow-[0_15px_30px_rgb(0,0,0,0.1)] border-8 border-white w-full max-w-lg transition-transform ${animClass}`}>
+
+                        {/* Container Gambar */}
+                        <div className="bg-gray-100 rounded-[2rem] overflow-hidden aspect-[4/3] flex items-center justify-center relative shadow-inner mb-6">
+                            <img
+                                key={currentCard.code} // Force re-render image biar animasinya smooth
+                                src={`https://flagcdn.com/w640/${currentCard.code}.png`}
+                                alt={currentCard.name}
+                                className="w-full h-full object-cover animate-pop"
+                                onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/640x480?text=Gambar+Rusak" }}
+                            />
+                        </div>
+
+                        {/* Nama Negara (Diedit untuk fitur Sensor) */}
+                        <div className="text-center mb-8 h-20 flex items-center justify-center">
+                            <div
+                                onClick={revealName}
+                                className={`cursor-pointer transition-all duration-300 ${!isRevealed ? 'hover:scale-105 active:scale-95' : ''}`}
+                            >
+                                {isRevealed ? (
+                                    <h2 className="text-4xl md:text-5xl font-black text-gray-800 tracking-tight animate-pop">
+                                        {currentCard.name}
+                                    </h2>
+                                ) : (
+                                    <div className="flex flex-col items-center gap-2">
+                                        <h2 className="text-5xl font-black text-gray-300 tracking-[0.5em] select-none">
+                                            ••••••
+                                        </h2>
+                                        <span className="text-xs text-blue-400 font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-100 animate-bounce">
+                                            👆 Klik untuk lihat nama
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Tombol Juri (Parent Controls) */}
+                        <div className="grid grid-cols-2 gap-4 px-2 pb-2">
+                            <button
+                                onClick={() => handleAnswer(false)}
+                                className="group bg-red-100 hover:bg-red-200 border-b-4 border-red-300 active:border-b-0 active:translate-y-1 rounded-3xl p-4 flex flex-col items-center justify-center transition-all h-32"
+                            >
+                                <span className="text-4xl mb-1 group-hover:scale-110 transition-transform">❌</span>
+                                <span className="text-red-500 font-black text-xl">SALAH</span>
+                            </button>
+
+                            <button
+                                onClick={() => handleAnswer(true)}
+                                className="group bg-green-100 hover:bg-green-200 border-b-4 border-green-300 active:border-b-0 active:translate-y-1 rounded-3xl p-4 flex flex-col items-center justify-center transition-all h-32"
+                            >
+                                <span className="text-4xl mb-1 group-hover:scale-110 transition-transform">✅</span>
+                                <span className="text-green-600 font-black text-xl">BENAR!</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Instruksi Kecil */}
+                    <div className="mt-8 text-center opacity-50">
+                        <p className="text-sm font-bold text-gray-500">
+                            Ayah/Ibu bertindak sebagai juri.<br />Klik tombol di atas sesuai jawaban anak.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+    </script>
+
+    <!-- Icons Init (Kalau diperlukan manual trigger, tapi biasanya auto) -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body>
+
+</html>
