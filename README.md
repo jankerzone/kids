@@ -36,7 +36,7 @@ Kunjungi: [https://petualangan-anak.pages.dev](https://petualangan-anak.pages.de
 1. Clone repository ini:
 ```bash
 git clone https://github.com/jankerzone/kids.git
-cd petualangan-anak
+cd kids
 ```
 
 2. Buka `index.html` di browser:
